@@ -1,0 +1,46 @@
+Documentation du programme ncdf
+
+Pour le bon déroulement du programme, netcdf4 doit être installé avec l'option de l'écriture en parallèle.
+Le script "lancement_programme.sh" doit être lancé depuis le répertoire où il se trouve.
+
+Les arguments:
+
+	1. L'adresse du répertoire contenant les dossiers TYYYY0101-TYYYY1231
+	2. Choix de la première décennie. Il suffit de choisir une année se trouvant dans cette décennie
+	3. Le nombre de décennie qu'on souhaite traiter
+	4. Le nombre de thread qui sera utilisé. Par défaut, 32.
+	5. L'adresse du répertoire qui contiendra les fichiers .nc4. L'adresse doit se terminer avec un "/".
+	6. Le nom du fichier .nc4. Le nom doit contenir deux "%d" afin d'inscrire la première et la dernière année de la décennie
+
+Déroulement du programme:
+
+	1.vérification des arguments
+	2.extraction de données dans des fichiers nc4.
+	3.creation d'un fichier .nc4 pour la décénnie courante
+	4.extraction des données des fichiers dat3
+	5.arrengement des données en bloc pour l'écriture dans le fichier .nc4
+	6.retour au point 3. pour la prochaine décennie.
+
+
+Le fichier bash "lancement_programme.sh" nous permet d'initialiser les arguments et d'executer le programme.
+Un fichier texte "comment.txt" apparaîtra. Il y sera écrit des informations du déroulé du programme notemment lors d'une erreur.
+Si le programme ne trouve pas les librairies, dans le script "lancement_programme.sh",on écrit l'adresse où se trouve les librairies netcdf et l'adresse de openmpi/lib dans
+les variables LIB et LIBMPI.
+
+Exemple:
+
+ADRESSE=/home/fichier
+ANNEE = 1920
+NOMBRE_DECENNIE = 10
+THREAD=8
+ADRESSE_RETOUR=/home/fichier_final
+NOM=document_annee_%d_à_%d
+
+./lancement_programme.sh
+
+Le programme lancé cherchera les fichiers correspondant à la décennie 1920 à la décennie 2020 à l'adresse /home/fichier. 1920-2020 -> 10 décennies.
+Le fichier concernant la décennie 1940 sera nommé "document_annee_1941_1950.nc4" et sera dans le dossier /home/fichier_final.
+Le programme lancera au plus 8 thread en même temps.
+
+Si pour un fichier .dat3, nous obtenons une erreur qui indique le manque d'une ligne, alors les données écrites seront décalés pour ce fichier-ci. Pour avoir plus de précisions
+sur l'erreur, consulter le fichier "comment.txt"

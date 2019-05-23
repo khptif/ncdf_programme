@@ -1,0 +1,83 @@
+Explication des différentes fonctions dans le fichier "fonction.c"
+
+ncdf_var_info_define :
+
+	Permet de remplir la structure ncdf_var_info.
+
+ncdf_var_integrer:
+
+	Permet d'utiliser une structure ncdf_var_info afin de récupérer les informations 		nécessaires pour créer la variable correspondant dans le fichier netcdf.
+
+handle_error:
+
+	Toutes fonctions provenant de la librairie netcdf renvoie un nombre. Ce nombre permet de 		savoir s'il y a eu une erreur. handle_error permet de vérifier ce nombre et en cas où, 		définir la nature de l'erreur et arrêté le programme.
+
+printComment:
+
+	Ecrire dans le fichier texte "comment.txt".
+
+get_jour_decennie:
+
+	Obtenir le nombre de jour dans une décennie à partir d'un fichier texte. Le nôtre est    		"day_of_the_decade_nc.txt". Le fichier texte doit être de la même forme que celui que nous 		utilisons.
+
+create_fichier_nc:
+
+	Créer un fichier netcdf4 et initialise les dimensions, les variables et les attributs.
+
+get_donnnee:
+
+	 Grâce aux appels systèmes linux, on transfère un fichier texte dans un tableau de 		 caractère. Le pointeur retourné pointe vers ce tableau.
+
+create_tableau_donnee:
+
+	 Créer un tableau de la structure "tableau_donnee" qui permet de stocker les données qui 	  seront plus tard écrit dans le fichier netcdf. Les données seront prises dans le 		 le fichier "adresse".
+
+free_tableau:
+
+	 Effacer un objet de la structure "tableau_donnee".
+
+jour_decennie:
+
+	fonction non usité ayant servi à des tests.
+
+put_donnee:
+
+	fonction qui permet d'extraire les données du repertoire "repertoire" et d'écrire dans les 		variables "watertemp" et "levlak". Vu que c'est une fonction centrale du programme, nous 	 allons préciser son déroulement.
+	Les arguments:
+		id_nc_file = identifiant du fichier netcdf
+		repertoire = repertoire où se trouve les fichiers à extraire les données
+		index_lat,index_lon = des tableaux qui nous permettent de connaitre les coordonnées
+					latitude et longitude des cellules des lacs
+		index_taille= la taille des deux tableaus précédents.
+		nombre_jour= nombre de jour dans la décennie.
+		annee = première année de la décennie
+		nombre_thread= le nombre de thread lancé à la fois.
+
+	Pour les threads, nous les utilisons lors de l'extraction et l'écriture des données.
+	Pour utiliser les threads, nous avons un tableau "index_thread" qui indique la
+	disponibilité d'un thread. 0=disponible 1=indisponible.
+	Nous détachons les threads et dans la définition des fonctions quand la fontion se termine,
+	on écrit dans le tableau d'index 0 et on appelle la fonction pthread_exit.
+	Pour savoir quelle threads sont disponibles, on parcours "index_thread" et on empile dans 
+	la pile "pile" indexé par "pile_index" les numéros des threads disponibles. Si la pile est
+	vide, on attend et on parcours à nouveau le tableau. On alloue à chaque thread un morceau 
+	de mémoire.
+
+	Les tableaux "donnees" et "profondeur" contiendront les données à écrire dans le fichier 
+	netcdf.
+	Les fichiers dat3 sont ouverts et on y extrait les données en deux temps. D'abord, du 
+	fichier dat3 en structure tableau_donnee. Ensuite, les données de la structure sont 
+	répartie dans les tableaux "donnees" et "profondeur".
+	On écrit dans le fichier netcdf avec des blocs de mémoires correspondant aux chunks de 
+	la variable. Le bloc est préparé avec "donnees" dans le programme principale et ensuite,
+	la fonction d'écriture est appelée avec des threads.
+
+nc_put:
+
+	fonction utilisé par les threads, qui définit les zones dans le fichier netcdf où se 		déroule l'écriture et appelle la fonction d'écriture.
+
+thread_remplir_tab:
+
+	permet de remplir un tableau avec les données d'un autre tableau. Utilisée par des threads.
+	 
+ 

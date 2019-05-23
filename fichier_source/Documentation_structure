@@ -1,0 +1,19 @@
+tableau_donnee:
+
+	permet de stocker les données des fichiers dat3.
+
+arg_thread_nc_put:
+	
+	structure utilisé pour la fonction nc_put comme argument.
+
+arg_thread_put:
+
+	structure anciennement utilisé comme argument pour la fonction nc_put.
+
+arg_remplir_tabl:
+
+	structure utilisé comme argument pour la fonction thread_remplir_tab
+
+ncdf_var_info:
+
+	permet de contenir les informations des variables du fichier netcdf.
